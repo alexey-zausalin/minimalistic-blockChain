@@ -7,21 +7,23 @@ import (
 )
 
 type Block struct {
-	Hash     string
-	Data     string
-	PrevHash string
-	Nonce    int
+	Hash         string
+	Data         string
+	PrevHash     string
+	Nonce        int
+	Transactions []*Transaction
 }
 
-func CreateBlock(data string, prevHash string) *Block {
+func CreateBlock(data string, prevHash string, transactions []*Transaction) *Block {
 	rand.Seed(time.Now().UnixNano())
 	initialNonce := rand.Intn(10000)
 
 	block := &Block{
-		Hash:     "",
-		Data:     data,
-		PrevHash: prevHash,
-		Nonce:    initialNonce,
+		Hash:         "",
+		Data:         data,
+		PrevHash:     prevHash,
+		Nonce:        initialNonce,
+		Transactions: transactions,
 	}
 
 	newPow := NewProofOfWork(block)
@@ -35,7 +37,14 @@ func CreateBlock(data string, prevHash string) *Block {
 }
 
 func Genesis() *Block {
-	return CreateBlock("Genesis", "")
+	coinbaseTransaction := &Transaction{
+		Sender:   "Coinbase",
+		Receiver: "Genesis",
+		Amount:   0.0,
+		Coinbase: true,
+	}
+
+	return CreateBlock("Genesis", "", []*Transaction{coinbaseTransaction})
 }
 
 func (b *Block) ComputeHash() {
