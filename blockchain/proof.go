@@ -63,3 +63,14 @@ func (pow *ProofOfWork) MineBlock() (int, []byte) {
 
 	return nonce, computedHash[:]
 }
+
+func (pow *ProofOfWork) Validate() bool {
+	var intHash big.Int
+
+	computedData := pow.ComputeData(pow.Block.Nonce)
+
+	computedHash := md5.Sum(computedData)
+	intHash.SetBytes(computedHash[:])
+
+	return intHash.Cmp(pow.Target) == -1
+}
