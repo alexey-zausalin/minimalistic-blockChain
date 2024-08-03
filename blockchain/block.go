@@ -10,6 +10,17 @@ type Block struct {
 	PrevHash string
 }
 
+func CreateBlock(data string, prevHash string) *Block {
+	block := &Block{Hash: "", Data: data, PrevHash: prevHash}
+	block.ComputeHash()
+
+	return block
+}
+
+func Genesis() *Block {
+	return CreateBlock("Genesis", "")
+}
+
 func (b *Block) ComputeHash() {
 	hasher := md5.New()
 
